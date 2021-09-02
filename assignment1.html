@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #cunsultentDefault {
+            background: url(https://assets.nflxext.com/ffe/siteui/vlv3/5a27cb25-33a9-4bcc-b441-95fefabcbd37/2548691d-4d8c-4d97-b96d-449d3cca5d7e/IN-en-20210823-popsignuptwoweeks-perspective_alpha_website_medium.jpg);
+        }
+
+        #content {
+            height: 40%;
+            width: 50%;
+            padding: 10%;
+            margin-left: 20%;
+        }
+
+        h1 {
+            font-size: 60px;
+        }
+
+        h1,
+        h2 {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 30px;
+        }
+
+        #input {
+            width: 80%;
+            height: 35px;
+            outline: none;
+            font-size: 20px;
+        }
+        h3{
+            text-align: center;
+        }
+
+        #submit {
+            height: 43px;
+            width: 18%;
+            margin-left:-4px;
+            background-color: red;
+            outline: none;
+            border: none;
+        }
+        #movie{
+            display: grid;
+            grid-template-columns: repeat(4,25%);
+            
+        }
+        #movie img{
+            width: 80%;
+            height: 60%;
+            padding: 7%;
+            justify-content: center;
+        }
+        body{
+            background-color: rgb(199, 197, 197);
+        }
+        .recommend{
+            color:blue;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            border-color: blue;
+            margin-left: 35%;
+          
+        }
+        #bt{
+            float: right;
+            color: rgb(255, 0, 0);
+            font-size: 40px;
+            margin-right: 10%;
+            margin-top: 1%;
+           border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cunsultentDefault" style="color: rgb(255, 255, 255); height: 600px;">
+        <button id = "bt" href="google.com">Login</button>
+        <div id="content">
+            <div id="heading">
+                <h1>Unlimited movies,</br> TV shows and more.</h1>
+                <h2>Watch anywhere. Cancel anytime.</h2>
+                <h2>Ready to watch? Search movie </h2>
+            </div>
+            <div id="searchbar">
+                <input type="text" id="input" placeholder="Search Movie">
+                <button type="submit" onclick="shop()" id="submit">Search</button>
+            </div>
+        </div>
+    </div>
+    <div id="movie"></div>
+</body>
+
+</html>
+<script>
+    //&maxResults=amount_you_want
+    async function shop() {
+        try{
+            let movie = document.getElementById("input").value;
+            if (movie.trim().length > 2) {
+                let data = await fetch(`http://www.omdbapi.com/?apikey=b0141aa&s=${movie}&maxResults=10`)
+                let products = await data.json();
+                if(products.Response == "False"){
+                    window.location.href = "abc.html";
+                }
+                else{
+                    return append(products.Search);
+                }
+                
+            }
+            return;
+        }
+        catch(err){
+           // console.log(err.message,"hiii")
+        }
+        
+    }
+    async function append(prod) {
+        //console.log(prod)
+        var data = await prod;
+        data.forEach(element => {
+            if (element.Poster != "N/A") {
+                // console.log(element);
+                let movie = document.getElementById("movie");
+                let div = document.createElement('div');
+                
+                let img = document.createElement('img');
+                img.src = element.Poster;
+                
+                // let button = document.createElement('button')
+                // button.innerHTML = "Know more about the movie";
+               //button.addEventListener("click", myFunction);
+                // function myFunction() {
+                //     var arr = [];
+                    
+                // }
+                let title = document.createElement('h3');
+                title.innerHTML = element.Title
+
+                 let year = document.createElement('h3');
+                year.innerHTML = `Year- ${element.Year}`;
+                
+                let rating = document.createElement('h3');
+                function getRandomArbitrary(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+                let random = getRandomArbitrary(6, 10).toFixed(1);
+                rating.innerHTML = `Rating- ${random}`;
+                
+                if(random > 8.5){
+                    let recommend = document.createElement('button');
+                    recommend.innerHTML = "Recommended";
+                    recommend.className = "recommend";
+                    div.append(img, title, year, rating, recommend);
+                }
+                else{
+                    div.append(img, title, year, rating);
+                }
+                movie.append(div);
+            }
+        });
+    }
+</script>
